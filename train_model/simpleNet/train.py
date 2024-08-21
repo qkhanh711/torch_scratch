@@ -2,13 +2,9 @@ import model.pl_modules.simple_nn as plm
 import model.nn_modules.simple_nn as nnm
 import torch
 from torch.utils.tensorboard import SummaryWriter
-from lightning.pytorch.loggers import WandbLogger
-from pytorch_lightning import Trainer
-from pytorch_lightning.callbacks import EarlyStopping, ModelCheckpoint
-
 
 import dataloader
-from config import cfg as config
+import config
 
 train_loader, test_loader = dataloader.get_dataloader(
     config.DATASET, config.BATCH_SIZE, config.NUM_WORKERS
@@ -77,7 +73,7 @@ class Train:
         trainer.fit(self.model, self.train_loader, self.test_loader)
 
     def train_pytorch(self, num_epochs):
-        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.config.LEARNING_LR)
+        optimizer = torch.optim.Adam(self.model.parameters(), lr=self.config.LEARNING_RATE)
         criterion = torch.nn.CrossEntropyLoss()
 
         for epoch in range(num_epochs):
@@ -126,6 +122,8 @@ class Train:
 
         self.writer.flush()
         self.writer.close()
+
+
 if __name__ == "__main__":
     train = Train("pl", config, train_loader, test_loader)
     train.train(config.EPOCHS)

@@ -1,33 +1,34 @@
 import torch
+from easydict import EasyDict as edict
 
+__C = edict()
 
-DATASET ="MNIST"
-BATCH_SIZE = 64
-NUM_WORKERS = 4
-DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-LOG_INTERVAL = 100
-MODEL_DIR = "models"
-MODEL_NAME = "nn_model.pth"
-DRY_RUN = False
-LEARNING_RATE = 0.001
-EPOCHS = 1
-MOMENTUM = 0.9
-N_INPUT = 784
-N_CLASSES = 10
+cfg = __C
+
+__C.DATASET = "MNIST"
+__C.BATCH_SIZE = 64
+__C.NUM_WORKERS = 4
+__C.DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+__C.LOG_INTERVAL = 100
+__C.MODEL_DIR = "models"
+__C.MODEL_NAME = "nn_model.pth"
+__C.DRY_RUN = False
+__C.LEARNING_RATE = 0.001
+__C.EPOCHS = 1
+__C.MOMENTUM = 0.9
+__C.N_INPUT = 784
+__C.N_CLASSES = 10
+__C.N_LAYER_1 = 128
+__C.N_LAYER_2 = 256
+__C.LOG_DIR = "logs"
+__C.PATIENCE = 3
+__C.LOG_EVERY_N_STEPS = 100
+__C.WANDB_PROJECT = "simple_nn"
+__C.WANDB_ENTITY = "pytorch-lightning"
 
 def print_config():
-    print(f"DATASET: {DATASET}")
-    print(f"BATCH_SIZE: {BATCH_SIZE}")
-    print(f"NUM_WORKERS: {NUM_WORKERS}")
-    print(f"DEVICE: {DEVICE}")
-    print(f"LOG_INTERVAL: {LOG_INTERVAL}")
-    print(f"MODEL_DIR: {MODEL_DIR}")
-    print(f"MODEL_NAME: {MODEL_NAME}")
-    print(f"DRY_RUN: {DRY_RUN}")
-    print(f"LEARNING_RATE: {LEARNING_RATE}")
-    print(f"EPOCHS: {EPOCHS}")
-    print(f"MOMENTUM: {MOMENTUM}")
-    print(f"N_INPUT: {N_INPUT}")
-    print(f"N_CLASSES: {N_CLASSES}")
+    for key in cfg:
+        print(key, ":", cfg[key])
+
 
 
