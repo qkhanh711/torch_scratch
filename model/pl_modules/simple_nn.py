@@ -16,9 +16,9 @@ class Net(pl.LightningModule):
         self.layer_2 = nn.Linear(n_layer_1, n_layer_2)
         self.layer_3 = nn.Linear(n_layer_2, n_classes)
         self.save_hyperparameters()
-        self.train_acc = torchmetrics.Accuracy(task="multiclass", num_classes=n_classes)
-        self.valid_acc = torchmetrics.Accuracy(task="multiclass", num_classes=n_classes)
-        self.test_acc = torchmetrics.Accuracy(task="multiclass", num_classes=n_classes)
+        self.train_acc = torchmetrics.Accuracy(num_classes=n_classes)
+        self.valid_acc = torchmetrics.Accuracy(num_classes=n_classes)
+        self.test_acc  = torchmetrics.Accuracy(num_classes=n_classes)
 
     def forward(self, x):
         batch_size, *dims = x.size()
@@ -33,6 +33,23 @@ class Net(pl.LightningModule):
         logits = self(xs)  
         loss = F.nll_loss(logits, ys)
         return logits, loss
+    
+    def training_step(self, batch, batch_idx):
+        xs, ys = batch
+        logits, loss = self.loss(xs, ys)
+        self.train_acc(logits, ys)
+        self.log("train_acc", self.train_acc, on_step=False, on_epoch=True)
+        self.log("train_loss", loss)
+        return loss
+    
+    def train_dataloader(self):
+        return self.train_loader
+    
+    def configure_callbacks(self):
+        return super().configure_callbacks()
+    
+    def configure_optimizers(self):
+        return super().configure_optimizers()
 
 
 class Net2(pl.LightningModule):
